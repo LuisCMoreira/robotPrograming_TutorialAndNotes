@@ -1,70 +1,85 @@
 C00000=-18.0168,-124.3223,113.0996,-78.7735,89.9684,-17.9302
-C00001=-22.4220,-104.7758,148.6126,-133.9375,89.9414,-24.9182
+C00001=-26.7957,-104.2521,148.2277,-133.9248,89.8947,60.8669
 C00002=-21.1025,-85.4615,150.6779,-155.3164,89.9390,-23.5984
 C00003=-19.4321,-83.7634,146.4403,-151.6154,89.5251,-21.9255
 C00004=-19.7572,-84.1454,147.3113,-154.6975,90.4529,-22.2477
 C00005=-19.7577,-90.9889,145.7738,-146.3175,90.4533,-22.2481
-C00006=-90.4685,-120.6351,129.9174,-99.3738,90.0718,-92.9626
-C00007=-19.6206,-91.0974,145.3205,-144.3214,89.9356,-22.1154
-C00008=-19.4773,-84.0780,147.5541,-155.5370,90.6300,-21.9591
-C00009=-19.3737,-84.1808,146.2017,-150.1528,89.2438,-21.8584
-C00010=-21.1028,-85.4618,150.6782,-155.3164,89.9394,-23.5988
-C00011=-22.4220,-104.7758,148.6126,-133.9375,89.9414,-24.9182
+C00006=-19.6206,-91.0974,145.3205,-144.3214,89.9356,-22.1154
+C00007=-19.4773,-84.0780,147.5541,-155.5370,90.6300,-21.9591
+C00008=-19.3737,-84.1808,146.2017,-150.1528,89.2438,-21.8584
+C00009=-21.1028,-85.4618,150.6782,-155.3164,89.9394,-23.5988
 NOP
+//
 // Start Position
-MOVJ VJ=10% CR=0.0MM ACC=50 DEC=50
+MOVJ VJ=20% CR=0.0MM ACC=50 DEC=50
 //
 // Set to 1 if second robot is in use
 SET B000 0
 //
+// Flag to set if robot as a part or not
 SET B005 0
 ///
+// While the machine is on M variable is True
 WHILE M#(550)=1 DO
-	// Gross Aproach
-	MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
+	// Ready Position
+	MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
+//	
+	//Wait for a pallet to be in position
 	WAIT B001 =1
-	DIN I001 IN#(12)
 //
-	IF I001=1 THEN
-		SET B006 1
-	ELSE
-		SET B006 0
-	ENDIF
-//
-	IF B006=1 & B005=0 THEN
+	// if palet has part and robot has not; do the pickup
+	IF IN#(12)=1 & B005=0 THEN
 //
 		//Pick Part sequence start//////////////////////////
-		// Gross Aproach
-		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
+		// far Aproach
+		MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
 		// Near Aproach
-		MOVL V=5.0MM/S CR=0.0MM ACC=50 DEC=50  
+		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50  
 		// Grab Part
 		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
 		// Lift Part
-		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
+		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
 //
+		// Wait for part to stop being detected in the pallet
+		WAIT IN#(12)=0
+//
+		// set robot work is done flag for the conveyor to move on
 		SET B002 1
+		// Set robot has part flag to true
 		SET B005 1
-		//SET B006 0
+		
+		//wait for the conveior work position to be free of pallet
+		WAIT B001 =0
 //
-		// Take Part Out
-		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-		//Pick Part sequence End////////////////////
-	ELSEIF B006=0 & B005=1 THEN
-		IF B005=0 THEN
-			// DANGER
-			PAUSE
-		ENDIF
+		//Pick Part sequence End/////////////////////
+	// if palet is there but it has no part and robot has part, place the part
+	ELSEIF IN#(12)=0 & B005=1 THEN
+//
 		//Place Part sequence start///////////////////////////
+		// far aproach
+		MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
+		// near aproach
 		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-		MOVL V=5.0MM/S CR=0.0MM ACC=50 DEC=50
-		MOVL V=5.0MM/S CR=0.0MM ACC=50 DEC=50
+		// palce
 		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
-		SET B002 1
-		SET B005 0
-		//SET B006 1
+		// get out
 		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
+		//
+		//wait for part to be detected
+		WAIT IN#(12)=1
+		//
+		// set robot done variable so conveior can move on
+		SET B002 1
+		// set robot has part flag to false
+		SET B005 0
+		// wait for the conveior work position to be free of pallet
+		WAIT B001 =0
+//
 		//Place  Part sequence End//////////////////////
+	ELSE
+		// If no valid combination, send cart away
+		SET B002 1
+		WAIT B001 =0
 	ENDIF
 //
 ENDWHILE
