@@ -9,29 +9,25 @@ C00007=-19.4773,-84.0780,147.5541,-155.5370,90.6300,-21.9591
 C00008=-19.3737,-84.1808,146.2017,-150.1528,89.2438,-21.8584
 C00009=-21.1028,-85.4618,150.6782,-155.3164,89.9394,-23.5988
 NOP
-//
+
 // Start Position
 MOVJ VJ=20% CR=0.0MM ACC=50 DEC=50
 //
 // Set to 1 if second robot is in use
 SET B000 0
 //
-// Flag to set if robot as a part or not
 SET B005 0
 ///
-// While the machine is on M variable is True
 WHILE M#(550)=1 DO
-	// Ready Position
+	// Gross Aproach
 	MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
-//	
-	//Wait for a pallet to be in position
 	WAIT B001 =1
+	
 //
-	// if palet has part and robot has not; do the pickup
 	IF IN#(12)=1 & B005=0 THEN
 //
 		//Pick Part sequence start//////////////////////////
-		// far Aproach
+		// Gross Aproach
 		MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
 		// Near Aproach
 		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50  
@@ -39,42 +35,26 @@ WHILE M#(550)=1 DO
 		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
 		// Lift Part
 		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-//
-		// Wait for part to stop being detected in the pallet
+		//
 		WAIT IN#(12)=0
 //
-		// set robot work is done flag for the conveyor to move on
 		SET B002 1
-		// Set robot has part flag to true
 		SET B005 1
-		
-		//wait for the conveior work position to be free of pallet
 		WAIT B001 =0
 //
+		// Take Part Out
 		//Pick Part sequence End/////////////////////
-	// if palet is there but it has no part and robot has part, place the part
 	ELSEIF IN#(12)=0 & B005=1 THEN
-//
 		//Place Part sequence start///////////////////////////
-		// far aproach
 		MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
-		// near aproach
 		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-		// palce
 		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
-		// get out
 		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
 		//
-		//wait for part to be detected
 		WAIT IN#(12)=1
-		//
-		// set robot done variable so conveior can move on
 		SET B002 1
-		// set robot has part flag to false
 		SET B005 0
-		// wait for the conveior work position to be free of pallet
 		WAIT B001 =0
-//
 		//Place  Part sequence End//////////////////////
 	ELSE
 		// If no valid combination, send cart away
