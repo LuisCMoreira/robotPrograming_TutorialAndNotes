@@ -1,0 +1,26 @@
+NOP
+//
+SET B005 1
+SET I040 -1
+SET I041 0
+//
+CALL JOB:nv_WHpositions
+//
+WHILE 1=1 DO
+// go to approach position
+MOVJ P030 VJ=100% CR=50.0MM ACC=100 DEC=100
+//
+IF B005=0 THEN
+//
+CALL JOB:nv_pickfromWH
+//
+ENDIF
+IF B005=1 THEN
+//
+//CALL JOB:nv_placeToWH
+CALL JOB:nv_placetoWH
+//
+ENDIF
+//
+ENDWHILE
+END

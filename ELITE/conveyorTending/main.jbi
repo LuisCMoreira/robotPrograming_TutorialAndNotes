@@ -9,58 +9,72 @@ C00007=-19.4773,-84.0780,147.5541,-155.5370,90.6300,-21.9591
 C00008=-19.3737,-84.1808,146.2017,-150.1528,89.2438,-21.8584
 C00009=-21.1028,-85.4618,150.6782,-155.3164,89.9394,-23.5988
 NOP
-
+//
 // Start Position
 MOVJ VJ=20% CR=0.0MM ACC=50 DEC=50
 //
 // Set to 1 if second robot is in use
 SET B000 0
-//
+// Set to 1 when part is in robot gripper
 SET B005 0
-///
+//
 WHILE M#(550)=1 DO
-	// Gross Aproach
-	MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
-	WAIT B001 =1
-	
-//
-	IF IN#(12)=1 & B005=0 THEN
-//
-		//Pick Part sequence start//////////////////////////
-		// Gross Aproach
-		MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
-		// Near Aproach
-		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50  
-		// Grab Part
-		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
-		// Lift Part
-		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-		//
-		WAIT IN#(12)=0
-//
-		SET B002 1
-		SET B005 1
-		WAIT B001 =0
-//
-		// Take Part Out
-		//Pick Part sequence End/////////////////////
-	ELSEIF IN#(12)=0 & B005=1 THEN
-		//Place Part sequence start///////////////////////////
-		MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
-		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-		MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
-		MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
-		//
-		WAIT IN#(12)=1
-		SET B002 1
-		SET B005 0
-		WAIT B001 =0
-		//Place  Part sequence End//////////////////////
-	ELSE
-		// If no valid combination, send cart away
-		SET B002 1
-		WAIT B001 =0
-	ENDIF
-//
+//// Gross Aproach
+MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
+WAIT B001 =1
+////
+IF IN#(12)=1 & B005=0 THEN
+//////
+//////Pick Part sequence start//////////////////////////
+//////
+////// Gross Aproach
+MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
+////// Near Aproach
+MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50  
+////// Grab Part
+MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
+////// Lift Part
+MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
+//////
+WAIT IN#(12)=0
+//////
+SET B002 1
+SET B005 1
+WAIT B001 =0
+//////
+////// Take Part Out
+//////
+//////Pick Part sequence End/////////////////////
+//////
+ELSEIF IN#(12)=0 & B005=1 THEN
+//////
+//////Place Part sequence start///////////////////////////
+//////
+MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
+MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
+MOVL V=10.0MM/S CR=0.0MM ACC=50 DEC=50
+MOVL V=50.0MM/S CR=0.0MM ACC=50 DEC=50
+//////
+WAIT IN#(12)=1
+SET B002 1
+SET B005 0
+WAIT B001 =0
+//////
+//////Place  Part sequence End//////////////////////
+//////
+ELSE
+//////
+////// If no valid combination, send cart away
+//////
+SET B002 1
+WAIT B001 =0
+ENDIF
+////
+
+
+
+
+////
 ENDWHILE
+//
 END

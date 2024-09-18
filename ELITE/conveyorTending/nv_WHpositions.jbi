@@ -1,0 +1,34 @@
+NOP
+// zone approach
+SETJOINT P030 -135.9775,-132.1519,106.4757,-155.2166,178.6358,96.2175
+//
+// pick 1st row start (upper left) - use as RORG
+SETJOINT P031 -43.9928,-88.6890,83.2123,-177.9700,70.7129,85.0721
+//
+// pick 1st row end (upper rigth) - use as RXY
+SETJOINT P032 -97.2523,-87.1162,82.0362,-178.8397,123.8781,88.3991
+//
+// pick last row end (lower left) - use as RXX
+SETJOINT P033 -96.0351,-79.6720,110.4858,-214.6785,122.6627,88.3001
+//
+// Number of rows
+SET I031 2
+SUB I031 1
+//
+// Number of collumns
+SET I032 3
+SUB I032 1
+//
+CCOOD USER#(1)
+//
+// Row step- distance column to column
+DIST D031 P031 P032
+DIV D031 I032
+//
+// Column step- distance row to row
+DIST D032 P031 P033
+DIV D032 I031
+//
+CCOOD USER#(0)
+//
+END
