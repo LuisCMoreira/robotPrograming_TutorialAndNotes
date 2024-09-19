@@ -112,7 +112,7 @@ while(1)do
         elseif stateValue==4 then
 
             countHoldButton=0
-            while get_robot_io_status (bufferSend)==0 and countHoldButton<get_robot_variable_status (counterMax) do
+            while get_robot_io_status (bufferSend)==0 and countHoldButton<get_global_variable (counterMax) do
                 sleep(1)
                 countHoldButton=countHoldButton+1
             end

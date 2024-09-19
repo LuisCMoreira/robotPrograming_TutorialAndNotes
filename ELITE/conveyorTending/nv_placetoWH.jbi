@@ -1,8 +1,7 @@
 NOP
 //place is dependent on I020 ans I021
 //
-IF I040<=
- THEN
+IF I040<= I032 THEN
 INC I040
 ELSE
 INC I041
