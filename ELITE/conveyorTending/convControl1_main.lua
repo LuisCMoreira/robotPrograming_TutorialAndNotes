@@ -7,6 +7,9 @@
 local bufferOut="I4"  -- sensor in the buffer out gate
 local workIn="I6" -- sensor in the robot working position
 local otherBufferIn="I9" -- sensor in the entry of the next section bufer
+
+local bufferSend="I20"
+local counterMax="D010"
 -- output
 local bufferStop="O0" -- locking actuater of buffer output
 local workStop="O2" -- locking actuator of work position output
@@ -227,6 +230,12 @@ while(1)do
             end
             
         elseif stateValue==4 then
+
+            countHoldButton=0
+            while get_robot_io_status (bufferSend)==0 and countHoldButton<get_robot_variable_status (counterMax) do
+                sleep(1)
+                countHoldButton=countHoldButton+1
+            end
 
             -- if there is a part in the buffer
             if get_robot_io_status (bufferOut)==1 then

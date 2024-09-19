@@ -7,6 +7,9 @@
 local bufferOut="I7"  -- sensor in the buffer out gate
 local workIn="I5" -- sensor in the robot working position
 local otherBufferIn="I8" -- sensor in the entry of the next section bufer
+
+local bufferSend="I20"
+local counterMax="D010"
 -- output
 local bufferStop="O3" -- locking actuater of buffer output
 local workStop="O1" -- locking actuator of work position output
@@ -16,7 +19,7 @@ local workStop="O1" -- locking actuator of work position output
 readyToWork="M561" -- inout to set if the work position is ready for the robot to work
 robotDone="M562" -- input to get if robot finished work
 
-hasRobot ="M560" -- if this variable is on, there is a second robot
+hasRobot ="M530" -- if this variable is on, there is a second robot
 
 -- Inetialization ----------------------------------------------------------------------------------
 -- Script Variables
@@ -106,7 +109,14 @@ while(1)do
                 stateValue=4
             end
             
-        elseif stateValue==4 then 
+        elseif stateValue==4 then
+
+            countHoldButton=0
+            while get_robot_io_status (bufferSend)==0 and countHoldButton<get_robot_variable_status (counterMax) do
+                sleep(1)
+                countHoldButton=countHoldButton+1
+            end
+            
             -- if there is a part in the buffer
             if get_robot_io_status (bufferOut)==1 then
                 -- open bufer locker

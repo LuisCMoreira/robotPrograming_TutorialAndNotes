@@ -22,11 +22,11 @@ WHILE M#(550)=1 DO
 //// Gross Aproach
 MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
 WAIT B001 =1
-////
+
 IF IN#(12)=1 & B005=0 THEN
-//////
+
 //////Pick Part sequence start//////////////////////////
-//////
+
 ////// Gross Aproach
 MOVL V=100.0MM/S CR=0.0MM ACC=50 DEC=50
 ////// Near Aproach
