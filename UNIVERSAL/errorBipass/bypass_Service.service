@@ -3,7 +3,7 @@ Description=My Script Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/dda/star.py
+ExecStart=/usr/bin/python3 /home/user/star.py
 Restart=on-failure
 
 [Install]
