@@ -1,0 +1,10 @@
+[Unit]
+Description=My Script Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/dda/star.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
